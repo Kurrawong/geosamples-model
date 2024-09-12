@@ -1,0 +1,28 @@
+version: '3'
+
+tasks:
+  all:
+    desc: Regenerate model.html
+    deps: [tidy, tests, readme, html]
+    cmds:
+      - echo "all tasks done"
+  html:
+    desc: Regenerate model.html
+    cmds:
+      - python scripts/make_html.py
+      - echo "HTML remade"
+  readme:
+    desc: Regenerate README.md
+    cmds:
+      - python scripts/make_readme.py
+      - echo "README remade"
+  tidy:
+    desc: Reformat the model.ttl file
+    cmds:
+      - python scripts/reformat_ttl.py model.ttl
+      - echo "RDF tidied"
+  tests:
+    desc: Run pytest tests
+    cmds:
+      - poetry run pytest --disable-warnings
+      - echo "Python tests run"

@@ -1,0 +1,83 @@
+PREFIX geospamples: <https://linked.data.gov.au/def/geospamples/>
+PREFIX ont: <https://linked.data.gov.au/def/geospamples>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <https://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ont:
+    a owl:Ontology ;
+    owl:versionIRI geospamples:1.0 ;
+    owl:versionInfo "1.0 - Initial version" ;
+    schema:abstract """#### Modelling Principles
+
+1. Use within a Supermodel
+2. Use of SOSA & schema.org
+3. Qualified Relations Pattern & Equivalencies
+
+
+##### 1. Use within a Supermodel
+This model may be used to represent geological samples in isolation or it may be used with other models, just as any other [Semantic Web](https://en.wikipedia.org/wiki/Semantic_Web) model may be. However, this model is expected to be used with other models in the geosciences domain with relations between them defined by a _Supermodel_. The Supermodel concept is a multi-model framework designed to support use of multiple _Component Models_, integrative _Background Models_ and so on.
+
+Anyone may use this model in isolation, with other Semantic Web models or within a Supermodel of their own making. The [Geological Survey of Western Australia](https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx)'s Supermodel that includes this model can be seen online here: <https://kurrawong.github.io/gswa-supermodel/>.
+
+
+##### 2. Use of SOSA & schema.org
+This model declares few new elements - classes, predicates or axioms - and instead re-uses elements from general-purpose and well-known models (ontologies) together with specific values from a few vocabularies.
+
+The main models this model reuses elements from are:
+
+* [Sensor, Observation, Sample, and Actuator (SOSA) Ontology](https://www.w3.org/TR/vocab-ssn/)
+* [schema.org Ontology](https://schema.org)
+
+
+##### 3. Qualified Relations Pattern & Equivalencies
+To provide for many modelling options without declaring new predicates for ecery single property that a geospample may have, this model uses the [Qualified Relation](https://patterns.dataincubator.org/book/qualified-relation.html) pattern. According to this pattern,
+
+
+
+Lots of stuff
+
+#### Heading 3
+
+More stuff
+    """ ;
+    schema:codeRepository <https://github.com/kurrawong/geospamples-model> ;
+    schema:creator <https://orcid.org/0000-0002-3884-3420> ;
+    schema:dateCreated "2024-06-02"^^xsd:date ;
+    schema:dateModified "2024-09-12"^^xsd:date ;
+    schema:description "A model that describes physical attributes and important relationships of geological samples" ;
+    schema:name "Geospamples Model" ;
+    schema:primaryImageOfPage "overview.png" ;
+    schema:publisher <https://linked.data.gov.au/org/gswa> ;
+.
+
+sosa:Sample
+    a owl:Class ;
+    rdfs:isDefinedBy sosa:Sample ;
+    skos:example """
+
+""" ;
+    skos:historyNote "This class is taken, unchanged, from SOSA" ;
+    skos:scopeNote "Use this class to represent the sample object" ;
+    schema:alternateName
+        "Geosample" ,
+        "Specimen" ;
+    schema:description "Samples are typically subsets or extracts from the feature of interest of an observation. " ;
+    schema:name "Sample" ;
+.
+
+<https://linked.data.gov.au/org/gswa>
+    a schema:Organization ;
+    schema:name "Geological Survey of Western Australia" ;
+    schema:url "https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx" ;
+.
+
+<https://orcid.org/0000-0002-3884-3420>
+    a schema:Person ;
+    schema:affiliation <https://kurrawong.ai> ;
+    schema:email "nick@kurrawong.ai" ;
+    schema:name "Nicholas J. Car" ;
+.
