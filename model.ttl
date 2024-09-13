@@ -11,20 +11,22 @@ ont:
     a owl:Ontology ;
     owl:versionIRI geospamples:1.0 ;
     owl:versionInfo "1.0 - Initial version" ;
-    schema:abstract """#### Modelling Principles
+    schema:abstract """
+1. Purpose
+2. Use within a Supermodel
+3. Use of SOSA & schema.org
+4. Qualified Relations Pattern & Equivalencies
 
-1. Use within a Supermodel
-2. Use of SOSA & schema.org
-3. Qualified Relations Pattern & Equivalencies
+#### 1. Purpose
+The purpose of this model is to group together model elements needed to represent geological samples - rock extracted from boreholes, thin sections, hand-collected sand samples etc. - in a way intuitive to geologists and other users of geological data _and_ also to use established models and modelling practices in the [Semantic Web](https://en.wikipedia.org/wiki/Semantic_Web) community. This should mean the model is easy to use by people familiar with the geosamples domain but also that it work well with large-scale Knowledge Graph, Linked Data and other sophisticated data structures based on graph principles.
 
-
-##### 1. Use within a Supermodel
+#### 2. Use within a Supermodel
 This model may be used to represent geological samples in isolation or it may be used with other models, just as any other [Semantic Web](https://en.wikipedia.org/wiki/Semantic_Web) model may be. However, this model is expected to be used with other models in the geosciences domain with relations between them defined by a _Supermodel_. The Supermodel concept is a multi-model framework designed to support use of multiple _Component Models_, integrative _Background Models_ and so on.
 
 Anyone may use this model in isolation, with other Semantic Web models or within a Supermodel of their own making. The [Geological Survey of Western Australia](https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx)'s Supermodel that includes this model can be seen online here: <https://kurrawong.github.io/gswa-supermodel/>.
 
 
-##### 2. Use of SOSA & schema.org
+#### 3. Use of SOSA & schema.org
 This model declares few new elements - classes, predicates or axioms - and instead re-uses elements from general-purpose and well-known models (ontologies) together with specific values from a few vocabularies.
 
 The main models this model reuses elements from are:
@@ -32,17 +34,59 @@ The main models this model reuses elements from are:
 * [Sensor, Observation, Sample, and Actuator (SOSA) Ontology](https://www.w3.org/TR/vocab-ssn/)
 * [schema.org Ontology](https://schema.org)
 
+The central class of this model is a SOSA `Sample` and most of the predicates indicated for use with it are from schema.org.
 
-##### 3. Qualified Relations Pattern & Equivalencies
-To provide for many modelling options without declaring new predicates for ecery single property that a geospample may have, this model uses the [Qualified Relation](https://patterns.dataincubator.org/book/qualified-relation.html) pattern. According to this pattern,
+Some other model elements come from [PROV-O](https://www.w3.org/TR/prov-o/), the Provenance Ontology and some spatial elements from [GeoSPARQL](https://docs.ogc.org/is/22-047r1/22-047r1.html).
 
 
+#### 4. Qualified Relations Pattern & Equivalencies
+To provide for many modelling options without declaring large numbers of new predicates for every single property that a geospample may have, this model uses the [Qualified Relation](https://patterns.dataincubator.org/book/qualified-relation.html) pattern. According to this pattern, one data element may link to another, not directly via a specialised predicate but indirectly, via an intermediate element which, in turn, links to "qualifying" information.
 
-Lots of stuff
+For example, instead of creating two predicates to indicate the origin and current location of a sample - where it was obtained from and where it is now stored - perhaps like this:
 
-#### Heading 3
+```
+:sample-x
+    ex:originLocation [
+        # ... location info
+    ] ;
+    ex:currentLocation [
+        # ... location info
+    ] ;
+.
+```
 
-More stuff
+we can do this:
+
+```
+:sample-x
+    schema:location [
+        schema:geo [
+            # ... location info
+        ] ;
+        schema:roleName ex:origin ;
+    ] ;
+    schema:location [
+        schema:geo [
+            # ... location info
+        ] ;
+        schema:roleName ex:current ;
+    ] ;
+.
+```
+
+So instead of inventing two predicates - `ex:originLocation` & `ex:currentLocation` - we just create a vocabulary of _roles_ that locations can have - `ex:origin` & `ex:current`. This may seem equivalent (no better) but it's not (and it is better) as we can qualify things in other ways too such as by time:
+
+```
+:sample-x
+    schema:location [
+        schema:geo [
+            # ... location info
+        ] ;
+        schema:roleName ex:current ;
+        schema:startDate "..." ;  # when the sample started being in this place
+    ] ;
+.
+```
     """ ;
     schema:codeRepository <https://github.com/kurrawong/geospamples-model> ;
     schema:creator <https://orcid.org/0000-0002-3884-3420> ;

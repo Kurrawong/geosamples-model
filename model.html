@@ -309,19 +309,6 @@ td {
     ]
   },
   {
-    "@id": "https://linked.data.gov.au/org/gswa",
-    "https://schema.org/name": [
-      {
-        "@value": "Geological Survey of Western Australia"
-      }
-    ],
-    "https://schema.org/url": [
-      {
-        "@value": "https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx"
-      }
-    ]
-  },
-  {
     "@id": "https://orcid.org/0000-0002-3884-3420",
     "https://schema.org/affiliation": [
       {
@@ -336,6 +323,19 @@ td {
     "https://schema.org/name": [
       {
         "@value": "Nicholas J. Car"
+      }
+    ]
+  },
+  {
+    "@id": "https://linked.data.gov.au/org/gswa",
+    "https://schema.org/name": [
+      {
+        "@value": "Geological Survey of Western Australia"
+      }
+    ],
+    "https://schema.org/url": [
+      {
+        "@value": "https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx"
       }
     ]
   }
@@ -437,27 +437,62 @@ td {
       </div>
       <div class="section" id="abstract">
 <h2>Introduction</h2>
-<h4>Modelling Principles</h4>
 <ol>
+<li>Purpose</li>
 <li>Use within a Supermodel</li>
 <li>Use of SOSA &amp; schema.org</li>
 <li>Qualified Relations Pattern &amp; Equivalencies</li>
 </ol>
-<h5>1. Use within a Supermodel</h5>
+<h4>1. Purpose</h4>
+<p>The purpose of this model is to group together model elements needed to represent geological samples - rock extracted from boreholes, thin sections, hand-collected sand samples etc. - in a way intuitive to geologists and other users of geological data <em>and</em> also to use established models and modelling practices in the <a href="https://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a> community. This should mean the model is easy to use by people familiar with the geosamples domain but also that it work well with large-scale Knowledge Graph, Linked Data and other sophisticated data structures based on graph principles.</p>
+<h4>2. Use within a Supermodel</h4>
 <p>This model may be used to represent geological samples in isolation or it may be used with other models, just as any other <a href="https://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a> model may be. However, this model is expected to be used with other models in the geosciences domain with relations between them defined by a <em>Supermodel</em>. The Supermodel concept is a multi-model framework designed to support use of multiple <em>Component Models</em>, integrative <em>Background Models</em> and so on.</p>
 <p>Anyone may use this model in isolation, with other Semantic Web models or within a Supermodel of their own making. The <a href="https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx">Geological Survey of Western Australia</a>'s Supermodel that includes this model can be seen online here: <a href="https://kurrawong.github.io/gswa-supermodel/">https://kurrawong.github.io/gswa-supermodel/</a>.</p>
-<h5>2. Use of SOSA &amp; schema.org</h5>
+<h4>3. Use of SOSA &amp; schema.org</h4>
 <p>This model declares few new elements - classes, predicates or axioms - and instead re-uses elements from general-purpose and well-known models (ontologies) together with specific values from a few vocabularies.</p>
 <p>The main models this model reuses elements from are:</p>
 <ul>
 <li><a href="https://www.w3.org/TR/vocab-ssn/">Sensor, Observation, Sample, and Actuator (SOSA) Ontology</a></li>
 <li><a href="https://schema.org">schema.org Ontology</a></li>
 </ul>
-<h5>3. Qualified Relations Pattern &amp; Equivalencies</h5>
-<p>To provide for many modelling options without declaring new predicates for ecery single property that a geospample may have, this model uses the <a href="https://patterns.dataincubator.org/book/qualified-relation.html">Qualified Relation</a> pattern. According to this pattern,</p>
-<p>Lots of stuff</p>
-<h4>Heading 3</h4>
-<p>More stuff</p>
+<p>The central class of this model is a SOSA <code>Sample</code> and most of the predicates indicated for use with it are from schema.org.</p>
+<p>Some other model elements come from <a href="https://www.w3.org/TR/prov-o/">PROV-O</a>, the Provenance Ontology and some spatial elements from <a href="https://docs.ogc.org/is/22-047r1/22-047r1.html">GeoSPARQL</a>.</p>
+<h4>4. Qualified Relations Pattern &amp; Equivalencies</h4>
+<p>To provide for many modelling options without declaring large numbers of new predicates for every single property that a geospample may have, this model uses the <a href="https://patterns.dataincubator.org/book/qualified-relation.html">Qualified Relation</a> pattern. According to this pattern, one data element may link to another, not directly via a specialised predicate but indirectly, via an intermediate element which, in turn, links to "qualifying" information.</p>
+<p>For example, instead of creating two predicates to indicate the origin and current location of a sample - where it was obtained from and where it is now stored - perhaps like this:</p>
+<pre><code>:sample-x
+    ex:originLocation [
+        # ... location info
+    ] ;
+    ex:currentLocation [
+        # ... location info
+    ] ;
+.</code></pre>
+<p>we can do this:</p>
+<pre><code>:sample-x
+    schema:location [
+        schema:geo [
+            # ... location info
+        ] ;
+        schema:roleName ex:origin ;
+    ] ;
+    schema:location [
+        schema:geo [
+            # ... location info
+        ] ;
+        schema:roleName ex:current ;
+    ] ;
+.</code></pre>
+<p>So instead of inventing two predicates - <code>ex:originLocation</code> &amp; <code>ex:currentLocation</code> - we just create a vocabulary of <em>roles</em> that locations can have - <code>ex:origin</code> &amp; <code>ex:current</code>. This may seem equivalent (no better) but it's not (and it is better) as we can qualify things in other ways too such as by time:</p>
+<pre><code>:sample-x
+    schema:location [
+        schema:geo [
+            # ... location info
+        ] ;
+        schema:roleName ex:current ;
+        schema:startDate "..." ;  # when the sample started being in this place
+    ] ;
+.</code></pre>
 </div>
 
         <h2>Classes</h2>

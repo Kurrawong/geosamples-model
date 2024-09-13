@@ -40,5 +40,8 @@ abstract_section = f'''<div class="section" id="abstract">
 '''
 html = html.replace('<div class="section" id="classes">', abstract_section)
 
+import re
+html = re.sub(r'<p>[\s]*<code>', '<pre><code>', html)
+html = re.sub(r'</code>[\s]*</p>', '</code></pre>', html)
 # write HTML to file
 open(REPO_DIR / "model.html", "w").write(html)

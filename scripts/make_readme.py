@@ -27,6 +27,8 @@ g = Graph().parse("model.ttl")
 for row in g.query(q):
     iri = row["iri"]
 
+print(iri)
+
 tmp = '''# {{title}}
 
 ### v{{version}}
