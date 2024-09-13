@@ -16,16 +16,25 @@ ont:
 2. Use within a Supermodel
 3. Use of SOSA & schema.org
 4. Qualified Relations Pattern & Equivalencies
+5. Specialised Patterns
+    1. types & materials
+    2. locations
+    3. timing
+    4. attribution
 
+<a id="purpose"></a>
 #### 1. Purpose
 The purpose of this model is to group together model elements needed to represent geological samples - rock extracted from boreholes, thin sections, hand-collected sand samples etc. - in a way intuitive to geologists and other users of geological data _and_ also to use established models and modelling practices in the [Semantic Web](https://en.wikipedia.org/wiki/Semantic_Web) community. This should mean the model is easy to use by people familiar with the geosamples domain but also that it work well with large-scale Knowledge Graph, Linked Data and other sophisticated data structures based on graph principles.
 
+It is _NOT_ the purpose of this model to represent the things sample - rock units and other _features of interest_ - or the results of analysis of the samples, such as geochemistry assays.
+
+<a id="supermodel"></a>
 #### 2. Use within a Supermodel
 This model may be used to represent geological samples in isolation or it may be used with other models, just as any other [Semantic Web](https://en.wikipedia.org/wiki/Semantic_Web) model may be. However, this model is expected to be used with other models in the geosciences domain with relations between them defined by a _Supermodel_. The Supermodel concept is a multi-model framework designed to support use of multiple _Component Models_, integrative _Background Models_ and so on.
 
 Anyone may use this model in isolation, with other Semantic Web models or within a Supermodel of their own making. The [Geological Survey of Western Australia](https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx)'s Supermodel that includes this model can be seen online here: <https://kurrawong.github.io/gswa-supermodel/>.
 
-
+<a id="sosa-schema"></a>
 #### 3. Use of SOSA & schema.org
 This model declares few new elements - classes, predicates or axioms - and instead re-uses elements from general-purpose and well-known models (ontologies) together with specific values from a few vocabularies.
 
@@ -38,7 +47,7 @@ The central class of this model is a SOSA `Sample` and most of the predicates in
 
 Some other model elements come from [PROV-O](https://www.w3.org/TR/prov-o/), the Provenance Ontology and some spatial elements from [GeoSPARQL](https://docs.ogc.org/is/22-047r1/22-047r1.html).
 
-
+<a id="qualified"></a>
 #### 4. Qualified Relations Pattern & Equivalencies
 To provide for many modelling options without declaring large numbers of new predicates for every single property that a geospample may have, this model uses the [Qualified Relation](https://patterns.dataincubator.org/book/qualified-relation.html) pattern. According to this pattern, one data element may link to another, not directly via a specialised predicate but indirectly, via an intermediate element which, in turn, links to "qualifying" information.
 
@@ -87,11 +96,52 @@ So instead of inventing two predicates - `ex:originLocation` & `ex:currentLocati
     ] ;
 .
 ```
+
+<a id="specialised-patterns"></a>
+#### 5. Specialised Patterns
+These patterns are all implementations of common modelling patterns.
+
+<a id="types-material"></a>
+##### 5.1 types & materials
+![](img/types-material.svg)
+
+To indicate the "type" of a sample, use `schema:additionalType` linking to a type selected from a controlled vocabulary. In this way, different sorts of "type" may be indicated by using `schema:additionalType` multiple times with different vocabularies. Typing may relate to the physical presentation or the purpose of the sample or other properties of it. Material is handled separately.
+
+To indicate the material the sample is made of, use `schema:material`.
+
+To indicate the method or equipment used to acquire the sample, use `sosa:usedProcedure` to link to a method/equipment description in a controlled vocabulary. Vocabularies for this include [Borehole drilling method](https://linked.data.gov.au/def/borehole-drilling-method-western-australia) and similar.
+
+<a id="locations"></a>
+##### 5.2 locations
+![](img/locations.svg)
+
+Samples may have more than one important location, such as where it was acquired - its "origin" - and where it is now "current". For this reason, the qualified relations pattern is used to associate a Sample with a location and a role that the location plays.
+
+Samples may also be linked to a `sosa:Sampling` event which may, in turn, be linked to a location. In that case, the "origin" location many be calculated.
+
+<a id="timing"></a>
+##### 5.3 timing
+![](img/timing.svg)
+
+The fundamental timing of importance to a geosample is when it was sampled. This can be indicated with the `schema:dateCreated` predicate which can indicate any date or date/time object.
+
+Additionally, a sample may be associated with a `sosa:Sampling` event object to which timing information maybe attached.
+
+<a id="attribution"></a>
+##### 5.4 attribution
+![](img/attribution.svg)
+
+Attribution is the association of an entity - some "thing" - with an agent - a person, organisation, tool - that caused/created/affected it.
+
+Samples ay have several important attributions such as _acquirer_, _collector_, _custodian_ etc. so, in this model, attribution must be qualified with a role, as per the diagram above.
+
+
+
     """ ;
     schema:codeRepository <https://github.com/kurrawong/geosamples-model> ;
     schema:creator <https://orcid.org/0000-0002-3884-3420> ;
     schema:dateCreated "2024-06-02"^^xsd:date ;
-    schema:dateModified "2024-09-12"^^xsd:date ;
+    schema:dateModified "2024-09-13"^^xsd:date ;
     schema:description "A model that describes physical attributes and important relationships of geological samples" ;
     schema:name "Geosamples Model" ;
     schema:primaryImageOfPage "overview.png" ;
