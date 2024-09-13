@@ -8,7 +8,7 @@ Code Repository at: <https://github.com/kurrawong/geospamples-model>
 
 Published Online at: 
 
-* <https://linked.data.gov.au/def/geospamples>
+* <https://linked.data.gov.au/def/geosamples>
 
 
 ## Contacts

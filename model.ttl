@@ -1,5 +1,5 @@
-PREFIX geospamples: <https://linked.data.gov.au/def/geospamples/>
-PREFIX ont: <https://linked.data.gov.au/def/geospamples>
+PREFIX geosamples: <https://linked.data.gov.au/def/geosamples/>
+PREFIX ont: <https://linked.data.gov.au/def/geosamples>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX schema: <https://schema.org/>
@@ -9,7 +9,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 ont:
     a owl:Ontology ;
-    owl:versionIRI geospamples:1.0 ;
+    owl:versionIRI geosamples:1.0 ;
     owl:versionInfo "1.0 - Initial version" ;
     schema:abstract """
 1. Purpose
@@ -88,12 +88,12 @@ So instead of inventing two predicates - `ex:originLocation` & `ex:currentLocati
 .
 ```
     """ ;
-    schema:codeRepository <https://github.com/kurrawong/geospamples-model> ;
+    schema:codeRepository <https://github.com/kurrawong/geosamples-model> ;
     schema:creator <https://orcid.org/0000-0002-3884-3420> ;
     schema:dateCreated "2024-06-02"^^xsd:date ;
     schema:dateModified "2024-09-12"^^xsd:date ;
     schema:description "A model that describes physical attributes and important relationships of geological samples" ;
-    schema:name "Geospamples Model" ;
+    schema:name "Geosamples Model" ;
     schema:primaryImageOfPage "overview.png" ;
     schema:publisher <https://linked.data.gov.au/org/gswa> ;
 .

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Geospamples Model</title>
+    <title>Geosamples Model</title>
     <style>
         #pylode {
             position: fixed;
@@ -283,6 +283,45 @@ td {
     <script id="schema.org" type="application/ld+json">
 [
   {
+    "@id": "https://linked.data.gov.au/org/gswa",
+    "https://schema.org/name": [
+      {
+        "@value": "Geological Survey of Western Australia"
+      }
+    ],
+    "https://schema.org/url": [
+      {
+        "@value": "https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx"
+      }
+    ]
+  },
+  {
+    "@id": "https://linked.data.gov.au/def/geosamples",
+    "@type": [
+      "https://schema.org/DefinedTermSet"
+    ],
+    "https://schema.org/creator": [
+      {
+        "@id": "https://orcid.org/0000-0002-3884-3420"
+      }
+    ],
+    "https://schema.org/description": [
+      {
+        "@value": "A model that describes physical attributes and important relationships of geological samples"
+      }
+    ],
+    "https://schema.org/name": [
+      {
+        "@value": "Geosamples Model"
+      }
+    ],
+    "https://schema.org/publisher": [
+      {
+        "@id": "https://linked.data.gov.au/org/gswa"
+      }
+    ]
+  },
+  {
     "@id": "https://orcid.org/0000-0002-3884-3420",
     "https://schema.org/affiliation": [
       {
@@ -299,45 +338,6 @@ td {
         "@value": "Nicholas J. Car"
       }
     ]
-  },
-  {
-    "@id": "https://linked.data.gov.au/def/geospamples",
-    "@type": [
-      "https://schema.org/DefinedTermSet"
-    ],
-    "https://schema.org/creator": [
-      {
-        "@id": "https://orcid.org/0000-0002-3884-3420"
-      }
-    ],
-    "https://schema.org/description": [
-      {
-        "@value": "A model that describes physical attributes and important relationships of geological samples"
-      }
-    ],
-    "https://schema.org/name": [
-      {
-        "@value": "Geospamples Model"
-      }
-    ],
-    "https://schema.org/publisher": [
-      {
-        "@id": "https://linked.data.gov.au/org/gswa"
-      }
-    ]
-  },
-  {
-    "@id": "https://linked.data.gov.au/org/gswa",
-    "https://schema.org/name": [
-      {
-        "@value": "Geological Survey of Western Australia"
-      }
-    ],
-    "https://schema.org/url": [
-      {
-        "@value": "https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx"
-      }
-    ]
   }
 ]
 	</script>
@@ -348,7 +348,7 @@ td {
       <img src="img/overview.svg" style="width:600px;" /> 
 
       <div class="section" id="metadata">
-        <h1>Geospamples Model</h1>
+        <h1>Geosamples Model</h1>
         <h2>Metadata</h2>
         <dl>
           <div>
@@ -356,14 +356,14 @@ td {
               <strong>IRI</strong>
             </dt>
             <dd>
-              <code>https://linked.data.gov.au/def/geospamples</code>
+              <code>https://linked.data.gov.au/def/geosamples</code>
             </dd>
           </div>
           <div>
             <dt>
               <a class="hover_property" href="http://purl.org/dc/terms/title" title="A name given to the resource. Defined in DCMI Metadata Terms">Title</a>
             </dt>
-            <dd><p>Geospamples Model</p></dd>
+            <dd><p>Geosamples Model</p></dd>
           </div>
           <div>
             <dt>
@@ -418,7 +418,7 @@ td {
               <a class="hover_property" href="http://www.w3.org/2002/07/owl#versionIRI" title="The property that identifies the version IRI of an ontology. Defined in The OWL 2 Schema vocabulary (OWL 2)">Version Iri</a>
             </dt>
             <dd>
-              <a href="#1.0">geospamples:1.0</a>
+              <a href="#1.0">geosamples:1.0</a>
             </dd>
           </div>
           <div>
@@ -546,13 +546,13 @@ td {
       <div id="namespaces">
         <h2>Namespaces</h2>
         <dl>
-          <dt id="geospamples">geospamples</dt>
+          <dt id="geosamples">geosamples</dt>
           <dd>
-            <code>https://linked.data.gov.au/def/geospamples/</code>
+            <code>https://linked.data.gov.au/def/geosamples/</code>
           </dd>
           <dt id="ont">ont</dt>
           <dd>
-            <code>https://linked.data.gov.au/def/geospamples</code>
+            <code>https://linked.data.gov.au/def/geosamples</code>
           </dd>
           <dt id="owl">owl</dt>
           <dd>
@@ -629,7 +629,7 @@ td {
           </h4>
           <ul class="second">
             <li>
-              <a href="#geospamples">geospamples</a>
+              <a href="#geosamples">geosamples</a>
             </li>
             <li>
               <a href="#ont">ont</a>
