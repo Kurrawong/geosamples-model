@@ -1,4 +1,4 @@
-# geospamples-model
+# geosamples-model
 
 ### v0.1.1
 
