@@ -283,15 +283,20 @@ td {
     <script id="schema.org" type="application/ld+json">
 [
   {
-    "@id": "https://linked.data.gov.au/org/gswa",
-    "https://schema.org/name": [
+    "@id": "https://orcid.org/0000-0002-3884-3420",
+    "https://schema.org/affiliation": [
       {
-        "@value": "Geological Survey of Western Australia"
+        "@id": "https://kurrawong.ai"
       }
     ],
-    "https://schema.org/url": [
+    "https://schema.org/email": [
       {
-        "@value": "https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx"
+        "@value": "nick@kurrawong.ai"
+      }
+    ],
+    "https://schema.org/name": [
+      {
+        "@value": "Nicholas J. Car"
       }
     ]
   },
@@ -322,20 +327,15 @@ td {
     ]
   },
   {
-    "@id": "https://orcid.org/0000-0002-3884-3420",
-    "https://schema.org/affiliation": [
-      {
-        "@id": "https://kurrawong.ai"
-      }
-    ],
-    "https://schema.org/email": [
-      {
-        "@value": "nick@kurrawong.ai"
-      }
-    ],
+    "@id": "https://linked.data.gov.au/org/gswa",
     "https://schema.org/name": [
       {
-        "@value": "Nicholas J. Car"
+        "@value": "Geological Survey of Western Australia"
+      }
+    ],
+    "https://schema.org/url": [
+      {
+        "@value": "https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx"
       }
     ]
   }
@@ -345,11 +345,10 @@ td {
   <body>
     <div id="content">
       <h1>Geosamples Model</h1>
-      <img src="img/overview.svg" style="width:600px;" /> 
+      <a href="img/overview.svg"><img src="img/overview.svg" style="width:800px;" /></a>
 
       <div class="section" id="metadata">
-        <h1>Geosamples Model</h1>
-        <h2>Metadata</h2>
+                <h2>Metadata</h2>
         <dl>
           <div>
             <dt>
@@ -442,12 +441,23 @@ td {
 <li>Use within a Supermodel</li>
 <li>Use of SOSA &amp; schema.org</li>
 <li>Qualified Relations Pattern &amp; Equivalencies</li>
+<li>Specialised Patterns<ol>
+<li>types &amp; materials</li>
+<li>locations</li>
+<li>timing</li>
+<li>attribution</li>
 </ol>
+</li>
+</ol>
+<p><a id="purpose"></a></p>
 <h4>1. Purpose</h4>
 <p>The purpose of this model is to group together model elements needed to represent geological samples - rock extracted from boreholes, thin sections, hand-collected sand samples etc. - in a way intuitive to geologists and other users of geological data <em>and</em> also to use established models and modelling practices in the <a href="https://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a> community. This should mean the model is easy to use by people familiar with the geosamples domain but also that it work well with large-scale Knowledge Graph, Linked Data and other sophisticated data structures based on graph principles.</p>
+<p>It is <em>NOT</em> the purpose of this model to represent the things sample - rock units and other <em>features of interest</em> - or the results of analysis of the samples, such as geochemistry assays.</p>
+<p><a id="supermodel"></a></p>
 <h4>2. Use within a Supermodel</h4>
 <p>This model may be used to represent geological samples in isolation or it may be used with other models, just as any other <a href="https://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a> model may be. However, this model is expected to be used with other models in the geosciences domain with relations between them defined by a <em>Supermodel</em>. The Supermodel concept is a multi-model framework designed to support use of multiple <em>Component Models</em>, integrative <em>Background Models</em> and so on.</p>
 <p>Anyone may use this model in isolation, with other Semantic Web models or within a Supermodel of their own making. The <a href="https://www.dmp.wa.gov.au/Geological-Survey/Geological-Survey-262.aspx">Geological Survey of Western Australia</a>'s Supermodel that includes this model can be seen online here: <a href="https://kurrawong.github.io/gswa-supermodel/">https://kurrawong.github.io/gswa-supermodel/</a>.</p>
+<p><a id="sosa-schema"></a></p>
 <h4>3. Use of SOSA &amp; schema.org</h4>
 <p>This model declares few new elements - classes, predicates or axioms - and instead re-uses elements from general-purpose and well-known models (ontologies) together with specific values from a few vocabularies.</p>
 <p>The main models this model reuses elements from are:</p>
@@ -457,6 +467,7 @@ td {
 </ul>
 <p>The central class of this model is a SOSA <code>Sample</code> and most of the predicates indicated for use with it are from schema.org.</p>
 <p>Some other model elements come from <a href="https://www.w3.org/TR/prov-o/">PROV-O</a>, the Provenance Ontology and some spatial elements from <a href="https://docs.ogc.org/is/22-047r1/22-047r1.html">GeoSPARQL</a>.</p>
+<p><a id="qualified"></a></p>
 <h4>4. Qualified Relations Pattern &amp; Equivalencies</h4>
 <p>To provide for many modelling options without declaring large numbers of new predicates for every single property that a geospample may have, this model uses the <a href="https://patterns.dataincubator.org/book/qualified-relation.html">Qualified Relation</a> pattern. According to this pattern, one data element may link to another, not directly via a specialised predicate but indirectly, via an intermediate element which, in turn, links to "qualifying" information.</p>
 <p>For example, instead of creating two predicates to indicate the origin and current location of a sample - where it was obtained from and where it is now stored - perhaps like this:</p>
@@ -493,6 +504,30 @@ td {
         schema:startDate "..." ;  # when the sample started being in this place
     ] ;
 .</code></pre>
+<p><a id="specialised-patterns"></a></p>
+<h4>5. Specialised Patterns</h4>
+<p>These patterns are all implementations of common modelling patterns.</p>
+<p><a id="types-material"></a></p>
+<h5>5.1 types &amp; materials</h5>
+<p><img alt="" src="img/types-material.svg" /></p>
+<p>To indicate the "type" of a sample, use <code>schema:additionalType</code> linking to a type selected from a controlled vocabulary. In this way, different sorts of "type" may be indicated by using <code>schema:additionalType</code> multiple times with different vocabularies. Typing may relate to the physical presentation or the purpose of the sample or other properties of it. Material is handled separately.</p>
+<p>To indicate the material the sample is made of, use <code>schema:material</code>.</p>
+<p>To indicate the method or equipment used to acquire the sample, use <code>sosa:usedProcedure</code> to link to a method/equipment description in a controlled vocabulary. Vocabularies for this include <a href="https://linked.data.gov.au/def/borehole-drilling-method-western-australia">Borehole drilling method</a> and similar.</p>
+<p><a id="locations"></a></p>
+<h5>5.2 locations</h5>
+<p><img alt="" src="img/locations.svg" /></p>
+<p>Samples may have more than one important location, such as where it was acquired - its "origin" - and where it is now "current". For this reason, the qualified relations pattern is used to associate a Sample with a location and a role that the location plays.</p>
+<p>Samples may also be linked to a <code>sosa:Sampling</code> event which may, in turn, be linked to a location. In that case, the "origin" location many be calculated.</p>
+<p><a id="timing"></a></p>
+<h5>5.3 timing</h5>
+<p><img alt="" src="img/timing.svg" /></p>
+<p>The fundamental timing of importance to a geosample is when it was sampled. This can be indicated with the <code>schema:dateCreated</code> predicate which can indicate any date or date/time object.</p>
+<p>Additionally, a sample may be associated with a <code>sosa:Sampling</code> event object to which timing information maybe attached.</p>
+<p><a id="attribution"></a></p>
+<h5>5.4 attribution</h5>
+<p><img alt="" src="img/attribution.svg" /></p>
+<p>Attribution is the association of an entity - some "thing" - with an agent - a person, organisation, tool - that caused/created/affected it.</p>
+<p>Samples ay have several important attributions such as <em>acquirer</em>, <em>collector</em>, <em>custodian</em> etc. so, in this model, attribution must be qualified with a role, as per the diagram above.</p>
 </div>
 
         <h2>Classes</h2>
@@ -607,7 +642,30 @@ td {
     </div>
     <div id="toc">
       <h3>Table of Contents</h3>
-      <ul class="first">
+    <ul class="first">
+        <li>
+          <h4>
+            <a href="#introduction">Introduction</a>
+          </h4>
+          <ul class="second">
+            <li>
+              <a href="#purpose">Purpose</a>
+            </li>
+            <li>
+              <a href="#supermodel">Use within a Supermodel</a>
+            </li>
+            <li>
+              <a href="#sosa-schema">Use of SOSA & schema.org</a>
+            </li>
+            <li>
+              <a href="#qualified">Qualified Relations Pattern & Equivalencies</a>
+            </li>
+            <li>
+              <a href="#specialised-patterns">Specialised Patterns</a>
+            </li>
+          </ul>
+        </li>
+
         <li>
           <h4>
             <a href="#metadata">Metadata</a>

@@ -18,12 +18,12 @@ after = '''<dl>
 html = html.replace(before, after)
 
 # remove title
-html = html.replace('<h1>Bore Model</h1>\n',  '')
+html = html.replace('<h1>Geosamples Model</h1>\n',  '')
 
 # add overview figure
 concepts_img = f'''<div id="content">
       <h1>Geosamples Model</h1>
-      <img src="img/overview.svg" style="width:600px;" /> 
+      <a href="img/overview.svg"><img src="img/overview.svg" style="width:800px;" /></a>
 '''
 html = html.replace('<div id="content">', concepts_img)
 
@@ -41,6 +41,33 @@ abstract_section = f'''<div class="section" id="abstract">
 html = html.replace('<div class="section" id="classes">', abstract_section)
 
 import re
+toc_insert = '''<h3>Table of Contents</h3>
+    <ul class="first">
+        <li>
+          <h4>
+            <a href="#introduction">Introduction</a>
+          </h4>
+          <ul class="second">
+            <li>
+              <a href="#purpose">Purpose</a>
+            </li>
+            <li>
+              <a href="#supermodel">Use within a Supermodel</a>
+            </li>
+            <li>
+              <a href="#sosa-schema">Use of SOSA & schema.org</a>
+            </li>
+            <li>
+              <a href="#qualified">Qualified Relations Pattern & Equivalencies</a>
+            </li>
+            <li>
+              <a href="#specialised-patterns">Specialised Patterns</a>
+            </li>
+          </ul>
+        </li>
+'''
+html = re.sub(r'<h3>Table of Contents</h3>([\s]+)<ul class="first">', toc_insert, html)
+
 html = re.sub(r'<p>[\s]*<code>', '<pre><code>', html)
 html = re.sub(r'</code>[\s]*</p>', '</code></pre>', html)
 # write HTML to file
