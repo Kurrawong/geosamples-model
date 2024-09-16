@@ -1,6 +1,7 @@
 PREFIX geosamples: <https://linked.data.gov.au/def/geosamples/>
 PREFIX ont: <https://linked.data.gov.au/def/geosamples>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX schema: <https://schema.org/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -95,6 +96,8 @@ So instead of inventing two predicates - `ex:originLocation` & `ex:currentLocati
         schema:startDate "..." ;  # when the sample started being in this place
     ] ;
 .
+
+Note that while many kinds of locations can be indicated using geometric coordinates with `schema:location` containing a `schema:geo` predicate pointing to GeoJSON, WKT or other expressions of coordinates, this isn't necessary. A location could instead indicate a `schema:description` and just describe a location's position. This is likely useful for the current location of samples which may be something like "Box 3, Shelf 2, Samples Building, Geological Survey Complex X".
 ```
 
 <a id="specialised-patterns"></a>
@@ -134,14 +137,11 @@ Additionally, a sample may be associated with a `sosa:Sampling` event object to 
 Attribution is the association of an entity - some "thing" - with an agent - a person, organisation, tool - that caused/created/affected it.
 
 Samples ay have several important attributions such as _acquirer_, _collector_, _custodian_ etc. so, in this model, attribution must be qualified with a role, as per the diagram above.
-
-
-
     """ ;
     schema:codeRepository <https://github.com/kurrawong/geosamples-model> ;
     schema:creator <https://orcid.org/0000-0002-3884-3420> ;
     schema:dateCreated "2024-06-02"^^xsd:date ;
-    schema:dateModified "2024-09-13"^^xsd:date ;
+    schema:dateModified "2024-09-16"^^xsd:date ;
     schema:description "A model that describes physical attributes and important relationships of geological samples" ;
     schema:name "Geosamples Model" ;
     schema:primaryImageOfPage "overview.png" ;
@@ -150,9 +150,45 @@ Samples ay have several important attributions such as _acquirer_, _collector_, 
 
 sosa:Sample
     a owl:Class ;
-    rdfs:isDefinedBy sosa:Sample ;
-    skos:example """
+    rdfs:isDefinedBy "https://www.w3.org/TR/vocab-ssn/" ;
+    skos:example """PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX schema: <https://schema/org/>
+PREFIX sosa: <http://www.w3.org/ns/sosa/Sample>
 
+:sample-x
+    a sosa:Sample ;
+    schema:additionalType <http://linked.data.gov.au/def/sample-type/core> ;
+    schema:material <http://linked.data.gov.au/def/sample-material/metal-sulphate> ;
+    schema:dateCreated "2022-05-11" ;
+    schema:isSampleOf <https://linked.data.gov.au/dataset/qldgeofeatures/AnakieProvince> ;
+    prov:wasAttributedTo [
+        prov:agent <https://orcid.org/0000-0002-8742-7730> ;  # a Person
+        prov:hadRole ex:collector ;
+    ] ;
+    prov:wasAttributedTo [
+        prov:agent <linked.data.gov.au/org/gsq> ;  # an Organisation
+        prov:hadRole ex:custodian ;
+    ] ;
+    sosa:usedProcedure <https://linked.data.gov.au/def/borehole-drilling-method-western-australia/cair-core>
+    schema:location [
+        schema:geo [
+            geo:asWKT "POINT (147.5844 -22.4293)"
+        ] ;
+        schema:roleName ex:origin ;
+    ] ;
+    schema:location [
+        schema:description "Box 3, Shelf 2, Cores Library Building, Geological Survey of Queensland, Zillmere, QLD" ;
+        schema:roleName ex:current ;
+    ] ;
+.
+
+:sample-x-1
+    a sosa:Sample ;
+    schema:isSampleOf :sample-x ;
+    schema:additionalType <http://linked.data.gov.au/def/sample-type/thin-section> ;
+    schema:dateCreated "2024-09-06" ;
+    # ...
+.
 """ ;
     skos:historyNote "This class is taken, unchanged, from SOSA" ;
     skos:scopeNote "Use this class to represent the sample object" ;
@@ -161,6 +197,126 @@ sosa:Sample
         "Specimen" ;
     schema:description "Samples are typically subsets or extracts from the feature of interest of an observation. " ;
     schema:name "Sample" ;
+.
+
+sosa:isSampleOf
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy "https://www.w3.org/TR/vocab-ssn/" ;
+    skos:example "See example for Sample" ;
+    skos:historyNote "This predicate is taken, unchanged, from SOSA" ;
+    skos:scopeNote "Use this predicate to link a Sample to the thing it is a sample of" ;
+    schema:description "Relation from a Sample to the FeatureOfInterest that it is intended to be representative of." ;
+    schema:name "is sample of" ;
+.
+
+schema:isPartOf
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy "https://schema.org/" ;
+    skos:example """PREFIX schema: <https://schema/org/>
+PREFIX sosa: <http://www.w3.org/ns/sosa/Sample>
+
+:sample-x
+    a sosa:Sample ;
+    schema:isPartOf :sample-collection-a ;
+.
+
+:sample-y
+    a sosa:Sample ;
+    schema:isPartOf :sample-collection-a ;
+.
+
+:sample-z
+    a sosa:Sample ;
+    schema:isPartOf :sample-collection-a ;
+.
+
+:sample-collection-a
+    a sosa:SampleCollection ;
+    schema:hasPart
+        :sample-x ,
+        :sample-y ,
+        :sample-z ;
+    # ... properties here that apply to all Samples in the collection
+.""" ;
+    skos:historyNote "This predicate is taken, unchanged, from schema.org" ;
+    skos:scopeNote "Use this predicate to link a Sample to a collection of samples. Use this in preference to sosa:member or rdfs:member" ;
+    schema:description "Indicates an item that this item (in some sense) is part of." ;
+    schema:name "is part of" ;
+    owl:inverseOf schema:hasPart ;
+.
+
+schema:additionalType
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy "https://schema.org/" ;
+    skos:example "See example for Sample" ;
+    skos:historyNote "This predicate is taken, unchanged, from schema.org" ;
+    skos:scopeNote "Use this predicate to indicate specialise types of Sample. Different sorts of 'type' may be indicated by using `schema:additionalType` multiple times linking to concept in different vocabularies." ;
+    schema:description "An additional type for the item, typically used for adding more specific types from external vocabularies in microdata syntax." ;
+    schema:name "additional type" ;
+.
+
+schema:material
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy "https://schema.org/" ;
+    skos:example "See example for Sample" ;
+    skos:historyNote "This predicate is taken, unchanged, from schema.org" ;
+    skos:scopeNote "Use this predicate to indicate the Sample's material  from a materials vocabulary." ;
+    schema:description "A material that something is made from, e.g. leather, wool, cotton, paper." ;
+    schema:name "material" ;
+.
+
+schema:location
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy "https://schema.org/" ;
+    skos:example "See example for Sample" ;
+    skos:historyNote "This predicate is taken, unchanged, from schema.org" ;
+    skos:scopeNote "Use this predicate to indicate any form of location for a sample: either where it was obtained from (origin) or where it is now (current). Link this predicate to a Blank Node or Named Node object that contains all information needed to understand the location, such as which role applies to it and what the location position is, ine their geographical coordinates or other forms of position, including street addresses and simple descriptions." ;
+    schema:description "The location of, for example, where an event is happening, where an organization is located, or where an action takes place." ;
+    schema:name "location" ;
+.
+
+schema:dateCreated
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy "https://schema.org/" ;
+    skos:example "See example for Sample" ;
+    skos:historyNote "This predicate is taken, unchanged, from schema.org" ;
+    skos:scopeNote "Use this predicate to indicate the date this Sample was created by an act of Sampling. This predicate is equivalent to a chain of predicates sosa:isResultOf -> sosa:resulttime where the node between them is a SOSA Sampling instance." ;
+    schema:description "The date on which the CreativeWork was created or the item was added to a DataFeed." ;
+    schema:name "date created" ;
+.
+
+sosa:isResultOf
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy "https://www.w3.org/TR/vocab-ssn/" ;
+    skos:example """PREFIX schema: <https://schema/org/>
+PREFIX sosa: <http://www.w3.org/ns/sosa/Sample>
+
+:sample-x
+    a sosa:Sample ;
+    sosa:isResultOf :sampling-y ;
+.
+
+:sample-y
+    a sosa:Sampling ;
+    sosa:hasResult :sample-x ;
+.
+""" ;
+    skos:historyNote "This predicate is taken, unchanged, from SOSA" ;
+    skos:scopeNote "Use this predicate to indicate the temporal activity that create it." ;
+    schema:description "Relation linking a Result to the Observation or Actuation that created or caused it." ;
+    schema:name "is result of" ;
+    owl:inverseOf sosa:hasResult
+.
+
+prov:qualifiedAttribution
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy "https://schema.org/" ;
+    rdfs:range prov:Attribution ;
+    skos:example "See example for Sample" ;
+    skos:historyNote "This predicate is taken, unchanged, from PROV-O" ;
+    skos:scopeNote "Use this predicate to indicate People, Organizations or Systems (Agents) that play, or played, a role in relation to this Sample, such as 'collector' or 'custodian'. The predicate must link to a provAttribution object which, in turn, links to a PROV Agent (via prov:agent) and PROV Role (via PROV hadRole)" ;
+    schema:description "Attribution is the ascribing of an entity to an agent. When an entity e is attributed to agent ag, entity e was generated by some unspecified activity that in turn was associated to agent ag. Thus, this relation is useful when the activity is not known, or irrelevant." ;
+    schema:name "qualified attribution" ;
 .
 
 <https://linked.data.gov.au/org/gswa>
