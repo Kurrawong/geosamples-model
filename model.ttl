@@ -18,10 +18,11 @@ ont:
 3. Use of SOSA & schema.org
 4. Qualified Relations Pattern & Equivalencies
 5. Specialised Patterns
-    1. types & materials
-    2. locations
-    3. timing
-    4. attribution
+    1. roles
+    2. types & materials
+    3. locations
+    4. timing
+    5. attribution
 
 <a id="purpose"></a>
 #### 1. Purpose
@@ -96,16 +97,26 @@ So instead of inventing two predicates - `ex:originLocation` & `ex:currentLocati
         schema:startDate "..." ;  # when the sample started being in this place
     ] ;
 .
-
-Note that while many kinds of locations can be indicated using geometric coordinates with `schema:location` containing a `schema:geo` predicate pointing to GeoJSON, WKT or other expressions of coordinates, this isn't necessary. A location could instead indicate a `schema:description` and just describe a location's position. This is likely useful for the current location of samples which may be something like "Box 3, Shelf 2, Samples Building, Geological Survey Complex X".
 ```
 
 <a id="specialised-patterns"></a>
 #### 5. Specialised Patterns
 These patterns are all implementations of common modelling patterns.
 
+<a id="roles"></a>
+##### 5.1 roles
+
+_roles_ are styles of relationship that something, often an Agent, takes on in relation to another thing. In this model, roles are used for:
+
+* Geometries in relation to Features
+    * e.g. an "origin" or "current" location
+* Agents in relation to Samples
+    * e.g. a sample's "collector" or "owner" or "custodian"
+
+Wherever roles are needed in this model, they should be indicated with the `schema:roleName` predicate and selected from vocabularies of roles which might only be relevant to one particular scenario, e.g. "collector" is relevant to a Sample but not a Feature.
+
 <a id="types-material"></a>
-##### 5.1 types & materials
+##### 5.2 types & materials
 ![](img/types-material.svg)
 
 To indicate the "type" of a sample, use `schema:additionalType` linking to a type selected from a controlled vocabulary. In this way, different sorts of "type" may be indicated by using `schema:additionalType` multiple times with different vocabularies. Typing may relate to the physical presentation or the purpose of the sample or other properties of it. Material is handled separately.
@@ -115,15 +126,17 @@ To indicate the material the sample is made of, use `schema:material`.
 To indicate the method or equipment used to acquire the sample, use `sosa:usedProcedure` to link to a method/equipment description in a controlled vocabulary. Vocabularies for this include [Borehole drilling method](https://linked.data.gov.au/def/borehole-drilling-method-western-australia) and similar.
 
 <a id="locations"></a>
-##### 5.2 locations
+##### 5.3 locations
 ![](img/locations.svg)
 
 Samples may have more than one important location, such as where it was acquired - its "origin" - and where it is now "current". For this reason, the qualified relations pattern is used to associate a Sample with a location and a role that the location plays.
 
 Samples may also be linked to a `sosa:Sampling` event which may, in turn, be linked to a location. In that case, the "origin" location many be calculated.
 
+Note that while many kinds of locations can be indicated using geometric coordinates with `schema:location` containing a `schema:geo` predicate pointing to GeoJSON, WKT or other expressions of coordinates, this isn't necessary. A location could instead indicate a `schema:description` and just describe a location's position. This is likely useful for the current location of samples which may be something like "Box 3, Shelf 2, Samples Building, Geological Survey Complex X".
+
 <a id="timing"></a>
-##### 5.3 timing
+##### 5.4 timing
 ![](img/timing.svg)
 
 The fundamental timing of importance to a geosample is when it was sampled. This can be indicated with the `schema:dateCreated` predicate which can indicate any date or date/time object.
@@ -131,7 +144,7 @@ The fundamental timing of importance to a geosample is when it was sampled. This
 Additionally, a sample may be associated with a `sosa:Sampling` event object to which timing information maybe attached.
 
 <a id="attribution"></a>
-##### 5.4 attribution
+##### 5.5 attribution
 ![](img/attribution.svg)
 
 Attribution is the association of an entity - some "thing" - with an agent - a person, organisation, tool - that caused/created/affected it.
@@ -162,12 +175,12 @@ PREFIX sosa: <http://www.w3.org/ns/sosa/Sample>
     schema:dateCreated "2022-05-11" ;
     schema:isSampleOf <https://linked.data.gov.au/dataset/qldgeofeatures/AnakieProvince> ;
     prov:wasAttributedTo [
-        prov:agent <https://orcid.org/0000-0002-8742-7730> ;  # a Person
-        prov:hadRole ex:collector ;
+        schema:agent <https://orcid.org/0000-0002-8742-7730> ;  # a Person
+        schema:roleName ex:collector ;
     ] ;
     prov:wasAttributedTo [
-        prov:agent <linked.data.gov.au/org/gsq> ;  # an Organisation
-        prov:hadRole ex:custodian ;
+        schema:agent <linked.data.gov.au/org/gsq> ;  # an Organisation
+        schema:roleName ex:custodian ;
     ] ;
     sosa:usedProcedure <https://linked.data.gov.au/def/borehole-drilling-method-western-australia/cair-core>
     schema:location [
@@ -310,13 +323,35 @@ PREFIX sosa: <http://www.w3.org/ns/sosa/Sample>
 
 prov:qualifiedAttribution
     a owl:ObjectProperty ;
-    rdfs:isDefinedBy "https://schema.org/" ;
+    rdfs:isDefinedBy "https://www.w3.org/TR/prov-o/" ;
     rdfs:range prov:Attribution ;
     skos:example "See example for Sample" ;
     skos:historyNote "This predicate is taken, unchanged, from PROV-O" ;
-    skos:scopeNote "Use this predicate to indicate People, Organizations or Systems (Agents) that play, or played, a role in relation to this Sample, such as 'collector' or 'custodian'. The predicate must link to a provAttribution object which, in turn, links to a PROV Agent (via prov:agent) and PROV Role (via PROV hadRole)" ;
+    skos:scopeNote "Use this predicate to indicate People, Organizations or Systems (Agents) that play, or played, a role in relation to this Sample, such as 'collector' or 'custodian'. The predicate must link to a provAttribution object which, in turn, links to a PROV Agent (via schema:agent) and PROV Role (via PROV hadRole)" ;
     schema:description "Attribution is the ascribing of an entity to an agent. When an entity e is attributed to agent ag, entity e was generated by some unspecified activity that in turn was associated to agent ag. Thus, this relation is useful when the activity is not known, or irrelevant." ;
     schema:name "qualified attribution" ;
+.
+
+schema:agent
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy "https://schema.org/" ;
+    rdfs:domain prov:Attribution ;
+    rdfs:range prov:Agent ;
+    skos:example "See example for Sample" ;
+    skos:historyNote "This predicate is taken, unchanged, from schema.org" ;
+    skos:scopeNote "Use this predicate to indicate a Person, Organization or Systems (Agent) that has a role to play with respect to some object" ;
+    schema:description "The direct performer or driver of the action (animate or inanimate). E.g. John wrote a book.." ;
+    schema:name "agent" ;
+.
+
+schema:roleName
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy "https://schema.org/" ;
+    rdfs:range prov:Role ;
+    skos:example "See example for Sample" ;
+    skos:historyNote "This predicate is taken, unchanged, from schema.org" ;
+    skos:scopeNote "Use this predicate to indicate any role that something plays with respect to something else. Can be used for Agents in relation to objects or Geometries in relation to Features etc." ;
+    schema:name "role name" ;
 .
 
 <https://linked.data.gov.au/org/gswa>
