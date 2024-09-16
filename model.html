@@ -442,6 +442,7 @@ td {
 <li>Use of SOSA &amp; schema.org</li>
 <li>Qualified Relations Pattern &amp; Equivalencies</li>
 <li>Specialised Patterns<ol>
+<li>roles</li>
 <li>types &amp; materials</li>
 <li>locations</li>
 <li>timing</li>
@@ -495,8 +496,7 @@ td {
     ] ;
 .</code></pre>
 <p>So instead of inventing two predicates - <code>ex:originLocation</code> &amp; <code>ex:currentLocation</code> - we just create a vocabulary of <em>roles</em> that locations can have - <code>ex:origin</code> &amp; <code>ex:current</code>. This may seem equivalent (no better) but it's not (and it is better) as we can qualify things in other ways too such as by time:</p>
-<p>```
-:sample-x
+<pre><code>:sample-x
     schema:location [
         schema:geo [
             # ... location info
@@ -504,30 +504,43 @@ td {
         schema:roleName ex:current ;
         schema:startDate "..." ;  # when the sample started being in this place
     ] ;
-.</p>
-<p>Note that while many kinds of locations can be indicated using geometric coordinates with <code>schema:location</code> containing a <code>schema:geo</code> predicate pointing to GeoJSON, WKT or other expressions of coordinates, this isn't necessary. A location could instead indicate a <code>schema:description</code> and just describe a location's position. This is likely useful for the current location of samples which may be something like "Box 3, Shelf 2, Samples Building, Geological Survey Complex X".
-```</p>
+.</code></pre>
 <p><a id="specialised-patterns"></a></p>
 <h4>5. Specialised Patterns</h4>
 <p>These patterns are all implementations of common modelling patterns.</p>
+<p><a id="roles"></a></p>
+<h5>5.1 roles</h5>
+<p><em>roles</em> are styles of relationship that something, often an Agent, takes on in relation to another thing. In this model, roles are used for:</p>
+<ul>
+<li>Geometries in relation to Features<ul>
+<li>e.g. an "origin" or "current" location</li>
+</ul>
+</li>
+<li>Agents in relation to Samples<ul>
+<li>e.g. a sample's "collector" or "owner" or "custodian"</li>
+</ul>
+</li>
+</ul>
+<p>Wherever roles are needed in this model, they should be indicated with the <code>schema:roleName</code> predicate and selected from vocabularies of roles which might only be relevant to one particular scenario, e.g. "collector" is relevant to a Sample but not a Feature.</p>
 <p><a id="types-material"></a></p>
-<h5>5.1 types &amp; materials</h5>
+<h5>5.2 types &amp; materials</h5>
 <p><img alt="" src="img/types-material.svg" /></p>
 <p>To indicate the "type" of a sample, use <code>schema:additionalType</code> linking to a type selected from a controlled vocabulary. In this way, different sorts of "type" may be indicated by using <code>schema:additionalType</code> multiple times with different vocabularies. Typing may relate to the physical presentation or the purpose of the sample or other properties of it. Material is handled separately.</p>
 <p>To indicate the material the sample is made of, use <code>schema:material</code>.</p>
 <p>To indicate the method or equipment used to acquire the sample, use <code>sosa:usedProcedure</code> to link to a method/equipment description in a controlled vocabulary. Vocabularies for this include <a href="https://linked.data.gov.au/def/borehole-drilling-method-western-australia">Borehole drilling method</a> and similar.</p>
 <p><a id="locations"></a></p>
-<h5>5.2 locations</h5>
+<h5>5.3 locations</h5>
 <p><img alt="" src="img/locations.svg" /></p>
 <p>Samples may have more than one important location, such as where it was acquired - its "origin" - and where it is now "current". For this reason, the qualified relations pattern is used to associate a Sample with a location and a role that the location plays.</p>
 <p>Samples may also be linked to a <code>sosa:Sampling</code> event which may, in turn, be linked to a location. In that case, the "origin" location many be calculated.</p>
+<p>Note that while many kinds of locations can be indicated using geometric coordinates with <code>schema:location</code> containing a <code>schema:geo</code> predicate pointing to GeoJSON, WKT or other expressions of coordinates, this isn't necessary. A location could instead indicate a <code>schema:description</code> and just describe a location's position. This is likely useful for the current location of samples which may be something like "Box 3, Shelf 2, Samples Building, Geological Survey Complex X".</p>
 <p><a id="timing"></a></p>
-<h5>5.3 timing</h5>
+<h5>5.4 timing</h5>
 <p><img alt="" src="img/timing.svg" /></p>
 <p>The fundamental timing of importance to a geosample is when it was sampled. This can be indicated with the <code>schema:dateCreated</code> predicate which can indicate any date or date/time object.</p>
 <p>Additionally, a sample may be associated with a <code>sosa:Sampling</code> event object to which timing information maybe attached.</p>
 <p><a id="attribution"></a></p>
-<h5>5.4 attribution</h5>
+<h5>5.5 attribution</h5>
 <p><img alt="" src="img/attribution.svg" /></p>
 <p>Attribution is the association of an entity - some "thing" - with an agent - a person, organisation, tool - that caused/created/affected it.</p>
 <p>Samples ay have several important attributions such as <em>acquirer</em>, <em>collector</em>, <em>custodian</em> etc. so, in this model, attribution must be qualified with a role, as per the diagram above.</p>
@@ -581,12 +594,12 @@ PREFIX sosa: &lt;http://www.w3.org/ns/sosa/Sample&gt;
     schema:dateCreated &quot;2022-05-11&quot; ;
     schema:isSampleOf &lt;https://linked.data.gov.au/dataset/qldgeofeatures/AnakieProvince&gt; ;
     prov:wasAttributedTo [
-        prov:agent &lt;https://orcid.org/0000-0002-8742-7730&gt; ;  # a Person
-        prov:hadRole ex:collector ;
+        schema:agent &lt;https://orcid.org/0000-0002-8742-7730&gt; ;  # a Person
+        schema:roleName ex:collector ;
     ] ;
     prov:wasAttributedTo [
-        prov:agent &lt;linked.data.gov.au/org/gsq&gt; ;  # an Organisation
-        prov:hadRole ex:custodian ;
+        schema:agent &lt;linked.data.gov.au/org/gsq&gt; ;  # an Organisation
+        schema:roleName ex:custodian ;
     ] ;
     sosa:usedProcedure &lt;https://linked.data.gov.au/def/borehole-drilling-method-western-australia/cair-core&gt;
     schema:location [
@@ -956,7 +969,7 @@ PREFIX sosa: &lt;http://www.w3.org/ns/sosa/Sample&gt;
                 <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#isDefinedBy" title="The definition of the subject resource. Defined in The RDF Schema vocabulary (RDFS)">Is Defined By</a>
               </th>
               <td>
-                <a href="https://schema.org/">schema:</a>
+                <a href="https://www.w3.org/TR/prov-o/">https://www.w3.org/TR/prov-o/</a>
               </td>
             </tr>
             <tr>
@@ -969,7 +982,7 @@ PREFIX sosa: &lt;http://www.w3.org/ns/sosa/Sample&gt;
               <th>
                 <a class="hover_property" href="http://www.w3.org/2004/02/skos/core#scopeNote" title="A note that helps to clarify the meaning and/or the use of a concept. Defined in SKOS Vocabulary">Scope Note</a>
               </th>
-              <td><p>Use this predicate to indicate People, Organizations or Systems (Agents) that play, or played, a role in relation to this Sample, such as 'collector' or 'custodian'. The predicate must link to a provAttribution object which, in turn, links to a PROV Agent (via prov:agent) and PROV Role (via PROV hadRole)</p></td>
+              <td><p>Use this predicate to indicate People, Organizations or Systems (Agents) that play, or played, a role in relation to this Sample, such as 'collector' or 'custodian'. The predicate must link to a provAttribution object which, in turn, links to a PROV Agent (via schema:agent) and PROV Role (via PROV hadRole)</p></td>
             </tr>
             <tr>
               <th>
@@ -986,6 +999,115 @@ PREFIX sosa: &lt;http://www.w3.org/ns/sosa/Sample&gt;
               <td>
                 <span>
                   <a href="http://www.w3.org/ns/prov#Attribution">Attribution</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="agent">
+          <h3>agent
+            <sup class="sup-op" title="OWL Object Property">op</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://schema.org/agent</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#isDefinedBy" title="The definition of the subject resource. Defined in The RDF Schema vocabulary (RDFS)">Is Defined By</a>
+              </th>
+              <td>
+                <a href="https://schema.org/">schema:</a>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>The direct performer or driver of the action (animate or inanimate). E.g. John wrote a book..</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2004/02/skos/core#scopeNote" title="A note that helps to clarify the meaning and/or the use of a concept. Defined in SKOS Vocabulary">Scope Note</a>
+              </th>
+              <td><p>Use this predicate to indicate a Person, Organization or Systems (Agent) that has a role to play with respect to some object</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2004/02/skos/core#example" title="An example of the use of a concept. Defined in SKOS Vocabulary">Example</a>
+              </th>
+              <td>
+                <pre>See example for Sample</pre>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="http://www.w3.org/ns/prov#Attribution">Attribution</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <span>
+                  <a href="http://www.w3.org/ns/prov#Agent">Agent</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="rolename">
+          <h3>role name
+            <sup class="sup-op" title="OWL Object Property">op</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://schema.org/roleName</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#isDefinedBy" title="The definition of the subject resource. Defined in The RDF Schema vocabulary (RDFS)">Is Defined By</a>
+              </th>
+              <td>
+                <a href="https://schema.org/">schema:</a>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2004/02/skos/core#scopeNote" title="A note that helps to clarify the meaning and/or the use of a concept. Defined in SKOS Vocabulary">Scope Note</a>
+              </th>
+              <td><p>Use this predicate to indicate any role that something plays with respect to something else. Can be used for Agents in relation to objects or Geometries in relation to Features etc.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2004/02/skos/core#example" title="An example of the use of a concept. Defined in SKOS Vocabulary">Example</a>
+              </th>
+              <td>
+                <pre>See example for Sample</pre>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <span>
+                  <a href="http://www.w3.org/ns/prov#Role">Role</a>
                   <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                 </span>
               </td>
@@ -1134,6 +1256,12 @@ PREFIX sosa: &lt;http://www.w3.org/ns/sosa/Sample&gt;
             </li>
             <li>
               <a href="#qualifiedattribution">qualified attribution</a>
+            </li>
+            <li>
+              <a href="#agent">agent</a>
+            </li>
+            <li>
+              <a href="#rolename">role name</a>
             </li>
           </ul>
         </li>
